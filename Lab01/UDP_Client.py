@@ -15,7 +15,7 @@ print(f'Server Addess: {addr[0]}:{addr[1]}\n')
 
 # User inputs messages to send to server
 while True:
-    clientMsg = input('Command to send to Server: ')
+    clientMsg = input('Command to send to Server: ').encode('utf-8')
     UDPClient.sendto(clientMsg, serverAddr)
     serverMsg, addr = UDPClient.recvfrom(bufferSize)
     serverMsg = serverMsg.decode('utf-8')
