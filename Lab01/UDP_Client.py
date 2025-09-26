@@ -1,7 +1,7 @@
 import socket
 
 clientMsg = 'Good morning, Shiron'.encode('utf-8')
-serverAddr = ('192.168.000', 5268)
+serverAddr = ('10.40.121.124', 5268)
 bufferSize = 1024
 
 UDPClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
