@@ -7,9 +7,24 @@ This is a temporary script file.
 
 import pyvisa
 import time
+import socket
 
+# Setup socket link
+welcomeClientMsg = 'Good Morning, Michael'.encode('utf-8')
+serverAddr = ('10.40.117.241', 5678)
+bufferSize = 1024
+UDPClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Establish first contact
+UDPClient.sendto(welcomeClientMsg, serverAddr)
+serverMsg, addr = UDPClient.recvfrom(bufferSize)
+serverMsg = serverMsg.decode('utf-8')
+print('Welcome from server: ', serverMsg)
+print(f'Server Address: {addr[0]}:{addr[1]}\n')
+
+# Pyvisa VNA setup
 rm = pyvisa.ResourceManager()
-vna = rm.open_resource("USB0::0x2A8D::0x7901::MY59500626::0::INSTR")
+vna = rm.open_resource("TCPIP0::169.254.88.132::INSTR")
 response = vna.query("*IDN?")
 print(response)
 vna.write('SYST:FPR') #System reset
@@ -23,9 +38,18 @@ vna.write('CALC:MARK ON') #Turn on a marker
 vna.write('CALC:MARK:FORM MLOG') #set the query format to magnitude log
 vna.write('CALC:MARK:FUNC MAX') #set the marker mode to max
 vna.write('CALC:MARK:FUNC:TRAC ON') #turn on auto trace 
+
+# Run VNA SpecAn Mode
 while True:
     peak = vna.query('CALC:MARK:Y?')    # marker Y readout
     freq = vna.query('CALC:MARK:X?')    # marker X readout
-    print('Frequency:', (float(freq[1:5]) * pow(10,(float(freq[16:19]))))/(pow(10,6)), 'MHz') # String weird stuff
-    print('Peak:', float(peak[0:5])*(pow(10,(float(peak[16:19])))), 'dBm')  # more weird string stuff
+    frequency = (float(freq[1:5]) * pow(10,(float(freq[16:19]))))/(pow(10,6))
+    peak = float(peak[0:5])*(pow(10,(float(peak[16:19]))))
+    clientPckt = f'\nFrequency: {frequency} MHz\nPeak: {peak} dBm'.encode('utf-8')
+    UDPClient.sendto(clientPckt, serverAddr)
+    serverMsg, addr = UDPClient.recvfrom(bufferSize)
+    serverMsg = serverMsg.decode('utf-8')
+    print('Message from Server: ', serverMsg)
+    print(f'\nFrequency: {frequency} MHz') # String weird stuff
+    print(f'Peak: {peak} dBm')  # more weird string stuff
     time.sleep(1)
