@@ -9,7 +9,7 @@ import pyvisa
 import time
 
 rm = pyvisa.ResourceManager()
-vna = rm.open_resource("USB0::0x2A8D::0x7901::MY59500626::0::INSTR")
+vna = rm.open_resource("TCPIP0::<VNA_IP_ADDR>::INSTR")
 response = vna.query("*IDN?")
 print(response)
 vna.write('SYST:FPR') #System reset
