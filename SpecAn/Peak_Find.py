@@ -43,7 +43,6 @@ vna.write('CALC:MARK:FUNC:TRAC ON') #turn on auto trace
 while True:
     peak = vna.query('CALC:MARK:Y?')    # marker Y readout
     freq = vna.query('CALC:MARK:X?')    # marker X readout
-<<<<<<< HEAD
     frequency = (float(freq[1:5]) * pow(10,(float(freq[16:19]))))/(pow(10,6))
     peak = float(peak[0:5])*(pow(10,(float(peak[16:19]))))
     clientPckt = f'\nFrequency: {frequency} MHz\nPeak: {peak} dBm'.encode('utf-8')
@@ -53,8 +52,6 @@ while True:
     print('Message from Server: ', serverMsg)
     print(f'\nFrequency: {frequency} MHz') # String weird stuff
     print(f'Peak: {peak} dBm')  # more weird string stuff
-=======
     print('Frequency:', (float(freq[1:5]) * pow(10,(float(freq[16:19]))))/(pow(10,6)), 'MHz') # String weird stuff
     print('Peak:', float(peak[0:5])*(pow(10,(float(peak[16:19])))), 'dBm')  # more weird string stuff
->>>>>>> 3da9e8591ca222cf1ccbcc31f5f417ea93aafa49
     time.sleep(1)
