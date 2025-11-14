@@ -9,19 +9,6 @@ import pyvisa
 import time
 import socket
 
-# Setup socket link
-welcomeClientMsg = 'Good Morning, Michael'.encode('utf-8')
-serverAddr = ('10.40.117.241', 5678)
-bufferSize = 1024
-UDPClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# Establish first contact
-UDPClient.sendto(welcomeClientMsg, serverAddr)
-serverMsg, addr = UDPClient.recvfrom(bufferSize)
-serverMsg = serverMsg.decode('utf-8')
-print('Welcome from server: ', serverMsg)
-print(f'Server Address: {addr[0]}:{addr[1]}\n')
-
 # Pyvisa VNA setup
 rm = pyvisa.ResourceManager()
 vna = rm.open_resource("TCPIP0::169.254.88.132::INSTR")
@@ -38,6 +25,19 @@ vna.write('CALC:MARK ON') #Turn on a marker
 vna.write('CALC:MARK:FORM MLOG') #set the query format to magnitude log
 vna.write('CALC:MARK:FUNC MAX') #set the marker mode to max
 vna.write('CALC:MARK:FUNC:TRAC ON') #turn on auto trace 
+
+# Setup socket link
+welcomeClientMsg = 'Good Morning, Michael'.encode('utf-8')
+serverAddr = ('10.40.117.241', 5678)
+bufferSize = 1024
+UDPClient = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Establish first contact
+UDPClient.sendto(welcomeClientMsg, serverAddr)
+serverMsg, addr = UDPClient.recvfrom(bufferSize)
+serverMsg = serverMsg.decode('utf-8')
+print('Welcome from server: ', serverMsg)
+print(f'Server Address: {addr[0]}:{addr[1]}\n')
 
 # Run VNA SpecAn Mode
 while True:
