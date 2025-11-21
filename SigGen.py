@@ -4,7 +4,8 @@ import time
 rm = pyvisa.ResourceManager()
 SigGen = rm.open_resource('TCPIP0::192.168.0.70::INSTR')
 
-SigGen.query('*IDN?')
+ID = SigGen.query('*IDN?')
+print(ID);
 SigGen.write('FUNC SIN')  # Select the sweep function
 SigGen.write('SWE:STAT ON')  # Enable frequency sweep
 SigGen.write('SWE:SPAC LIN')  # Select linear sweep mode
